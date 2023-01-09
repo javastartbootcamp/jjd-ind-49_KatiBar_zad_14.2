@@ -10,7 +10,7 @@ public class ServiceUtility {
     private static final int ADD_CAR = 1;
     private static final int POLL_CAR = 2;
     private Queue<Car> cars = new LinkedList<>();
-    private Scanner scanner = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
     public Queue<Car> getCarsQueueFromFile(String fileName) throws FileNotFoundException {
         try (Scanner scanner = new Scanner(new File(fileName))) {
