@@ -6,11 +6,11 @@ import java.util.Queue;
 import java.util.Scanner;
 
 public class ServiceUtility {
-    public static final int EXIT = 0;
-    public static final int ADD_CAR = 1;
-    public static final int POLL_CAR = 2;
+    private static final int EXIT = 0;
+    private static final int ADD_CAR = 1;
+    private static final int POLL_CAR = 2;
     private Queue<Car> cars = new LinkedList<>();
-    Scanner scanner = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
 
     public Queue<Car> getCarsQueueFromFile(String fileName) throws FileNotFoundException {
         try (Scanner scanner = new Scanner(new File(fileName))) {
@@ -31,35 +31,43 @@ public class ServiceUtility {
     }
 
     public void run(String fileName) throws IOException {
-        File file = new File(fileName);
         cars = getCarsQueueFromFile(fileName);
         int option;
         do {
             option = chooseOption();
             switch (option) {
                 case EXIT:
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    if (!cars.isEmpty()) {
-                        saveToFile(fileName, cars);
-                    }
-                    System.out.println("Program zakończony.");
+                    exit(fileName);
                     break;
                 case ADD_CAR:
                     cars.add(createCar());
                     break;
                 case POLL_CAR:
-                    if (!cars.isEmpty()) {
-                        System.out.println(cars.poll() + " w trakcie przeglądu.");
-                    } else {
-                        System.out.println("Brak pojazdów w kolejce");
-                    }
+                    poolCar();
                     break;
                 default:
                     System.out.println("Nie ma takiej opcji, wybierz ponownie.");
             }
         } while (option != EXIT);
+    }
+
+    private void poolCar() {
+        if (!cars.isEmpty()) {
+            System.out.println(cars.poll() + " w trakcie przeglądu.");
+        } else {
+            System.out.println("Brak pojazdów w kolejce");
+        }
+    }
+
+    private void exit(String fileName) throws IOException {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        if (!cars.isEmpty()) {
+            saveToFile(fileName, cars);
+        }
+        System.out.println("Program zakończony.");
     }
 
     private void saveToFile(String fileName, Queue<Car> cars) throws IOException {
@@ -82,9 +90,9 @@ public class ServiceUtility {
 
     private static void printOptions() {
         System.out.println("Wybierz opcję:");
-        System.out.println("0 - zakończ program");
-        System.out.println("1 - dodaj nowy pojazd");
-        System.out.println("2 - pobierz pojazd z kolejki do przeglądu");
+        System.out.println(EXIT + " - zakończ program");
+        System.out.println(ADD_CAR + " - dodaj nowy pojazd");
+        System.out.println(POLL_CAR + " - pobierz pojazd z kolejki do przeglądu");
     }
 
     private Car createCar() {
